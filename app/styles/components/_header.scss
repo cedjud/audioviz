@@ -1,0 +1,30 @@
+.header {
+  padding: 1rem;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  h1 {
+    margin: 0;
+    font-weight: lighter;
+  }
+}
+
+.controls {
+
+  button {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: $font-size;
+    color: $color-white;
+    cursor: pointer;
+    padding: .5rem;
+
+    &:hover {
+      transform: scale(1.1);
+      opacity: .9;
+    }
+  }
+}
