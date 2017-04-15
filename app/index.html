@@ -3,25 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <title>AudioViz</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
 </head>
 <body>
   <div class="app">
 
     <div class="header">
-      <h1>AudioViz</h1>
+      <!-- <h1>AudioViz</h1> -->
       <div class="controls">
         <button id="play" type="button" value="play">
-          <i class="fa fa-play"></i>
+          <!-- <i class="fa fa-play"></i> -->
+          play
         </button>
         <button id="stop" type="button" value="stop">
-          <i class="fa fa-stop"></i>
+          <!-- <i class="fa fa-stop"></i> -->
+          stop
+        </button>
+        <button id="addTrack" type="button" value="addTrack">
+          <!-- <i class="fa fa-stop"></i> -->
+          add track
+        </button>
+        <!-- <p id="panel">panel</p> -->
+        <select type="select" id="soundSelect">
+        </select>
+
+        <button id="removeTrack" type="button" value="removeTrack">
+          <!-- <i class="fa fa-stop"></i> -->
+          remove track
         </button>
       </div>
     </div>
 
-    <div class="canvas-container">
-      <canvas id="canvas" class="canvas" width="460" height=" 255"></canvas>
+    <div id="container" class="canvas-container">
+      <!-- <canvas id="canvas" class="canvas" width="800" height="400"></canvas> -->
     </div>
 
   </div>

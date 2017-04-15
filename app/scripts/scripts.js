@@ -1,92 +1,45 @@
-import { Howler, Howl } from 'howler';
-
-// Create a new Howl with audio track
-const audioTrack = new Howl({
-  src: ['music2.mp3']
-});
-
-// Create analyser node and connect it to master gain
-const analyser = Howler.ctx.createAnalyser();
-// Connect the masterGain -> analyser (disconnecting masterGain -> destination)
-Howler.masterGain.connect(analyser);
-// Connect the analyser -> destination
-analyser.connect(Howler.ctx.destination);
-
-analyser.fftSize = 64;
-var bufferLength = analyser.frequencyBinCount;
-console.log(bufferLength);
-var dataArray = new Uint8Array(bufferLength);
+// import Sequencer from './sequencer.js';
+// import VisCanvas from './VisCanvas.js';
+import initControls from './controls.js';
+// OLD ABOVE / NEW BELOW
+import SequencerCanvas from './SequencerCanvas.js';
 
 document.addEventListener('DOMContentLoaded', (e) => {
-  // Set up canvas and canvas context
-  const canvas = document.getElementById('canvas');
-  const WIDTH = 460;
-  const HEIGHT = 255;
-  let canvasCtx = canvas.getContext('2d');
+  // let numTracks = 0;
+  // let bars = 2;
+  // let bpm = 120;
+  // let masterGain = 0.8;
+  // let tracks = [];
+  //
+  // const sequencer = new Sequencer(bars, numTracks, tracks, bpm, masterGain);
+  // initControls(sequencer);
 
-  // Get control elements
-  let playButton = document.getElementById('play');
-  let stopButton = document.getElementById('stop');
+  /** New start
+  The way this program will work.
+  1. The SequencerCanvas - the Parent Component.
+  The SequencerCanvas object makes use of Konva and Konva's Animation object.
+   - It will draw a Layer containing Groups representing individual Tracks.
+   - Each Track will have a specific Howl representing a sound.
+   - Groups will contain Nodes representing the Beats in each Track.
+   - The User will be free to add and remove Tracks at any time.
+   - The User can start and stop playback
+  2. The Konva Animation object
+  The animation object will be used for metering the time.
+   - It will tick at the given BPM (60000 / ms).
+   - Each tick will increment the currentBeat until the total number of
+     Beats, as indicated by the number of Bars (Bar = 4 Beats), is reached. Once
+     the total number of Beats is reached currentBeat is reset to 0.
+   - There will be a visual indication of the currentBeat by manipulating Nodes.
+   - If the Beat in a track at the position of currentBeat is set to Active, the
+     Howl associated with the Beat's parent Track will be played.
+  3. The Track
+  A Konva Group with a Howl and an array of Beats, possibly an array containing
+  the Nodes' active values.
+  4. The Beat.
+  A Konva Node with a value representing it's active state. This state shoule be
+  togglable.
 
-  let animation;
-
-  const draw = (timestamp) => {
-    analyser.getByteFrequencyData(dataArray);
-    // console.log(dataArray);
-    canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
-
-    var barWidth = (WIDTH / bufferLength) * 2;
-    var barHeight;
-    var x = barWidth / 2;
-
-    var centerY = (canvas.height / 4) - x;
-
-    for(var i = 0; i < bufferLength; i++) {
-
-      if (i == 8){
-        centerY += centerY;
-        var x = barWidth / 2;
-      } else if (i == 16){
-        centerY += centerY / 2;
-        var x = barWidth / 2;
-      } else if (i == 24){
-        centerY += centerY / 3;
-        var x = barWidth / 2;
-      }
-
-      barHeight = dataArray[i];
-
-      // canvasCtx.fillStyle = 'rgba(255,255,255,0.5)';
-      // canvasCtx.fillRect(x,HEIGHT-barHeight/2,barWidth,barHeight);
-
-      var radius = ( barWidth / 2 ) + (barHeight / 20);
-      var opacity = barHeight / 255;
-      if (opacity < 0.3) {
-        opacity = 0.3;
-      }
-
-      canvasCtx.beginPath();
-      canvasCtx.arc(x, centerY, radius /2, 0, 2 * Math.PI, false);
-      canvasCtx.fillStyle = 'rgba(255,255,255,' + opacity + ')';
-      canvasCtx.fill();
-      canvasCtx.lineWidth = 0;
-      canvasCtx.strokeStyle = 'rgba(255,255,255,' + opacity + ')';
-      canvasCtx.stroke();
-
-      x += barWidth * 2;
-    }
-
-    animation = window.requestAnimationFrame(draw);
-  };
-
-  // Add event listeners
-  playButton.addEventListener('click', () => {
-    audioTrack.play();
-    animation = window.requestAnimationFrame(draw);
-  });
-  stopButton.addEventListener('click', () => {
-    audioTrack.stop();
-    window.cancelAnimationFrame(animation);
-  });
-
+  */
+  const Sequencer = new SequencerCanvas();
+  initControls(Sequencer);
 });

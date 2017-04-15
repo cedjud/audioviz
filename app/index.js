@@ -6,3 +6,4 @@ require('./scripts/scripts.js');
 
 require('./media/audio/music.mp3');
 require('./media/audio/music2.mp3');
+require('./media/audio/music3.mp3');
