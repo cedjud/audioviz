@@ -20,8 +20,8 @@ class SequencerCanvas {
   addNode(group, value, posX, posY, isActive){
     let node = new Konva.Circle({
       x: posX,
-      y: posY,
-      radius: value / 2,
+      y: value / 4,
+      radius: value / 4,
       fill: 'white',
       opacity: .5,
       active: isActive
@@ -32,6 +32,52 @@ class SequencerCanvas {
       this.layer.draw();
     });
     group.add(node);
+  }
+
+  addLabel(posX, posY, sound, group){
+    var simpleText = new Konva.Text({
+      x: posX,
+      // y: posY,
+      text: group.attrs.id + " / " + sampleRefs[sound].name,
+      fontSize: 12,
+      fill: 'white'
+    });
+    simpleText.on('click', () => {
+      this.removeGroup(sound);
+    });
+
+    group.add(simpleText);
+  }
+
+
+  addGroup(layer, id, sound){
+    if (this.tracks.indexOf(sound) == -1){
+
+      this.tracks.push(sound);
+      let value = (this.stage.getHeight() / 8);
+      let posX = (value * 2) + 150;
+      let posY = value * (id + 1);
+
+      let group = new Konva.Group({
+        id: sound,
+        fill: 'blue',
+        y: posY,
+        sound: new Howl({
+            src: ['./dist/' + sampleRefs[sound].name ]
+          }),
+      });
+
+      this.addLabel(value, posY - 5, sound, group);
+
+      for (let i = 0; i < 8; i++){
+        this.addNode(group, value / 2, posX, posY, false);
+        posX = posX + (value);
+      }
+      layer.add(group);
+      this.layer.draw();
+    } else {
+      console.log('No duplicates');
+    }
   }
 
   removeGroup(sound){
@@ -48,48 +94,6 @@ class SequencerCanvas {
     }
   }
 
-  addLabel(posX, posY, sound, group){
-    var simpleText = new Konva.Text({
-      x: posX,
-      y: posY,
-      text: sampleRefs[sound].name,
-      fontSize: 12,
-      fontFamily: 'Calibri',
-      fill: 'white'
-    });
-    simpleText.on('click', () => {
-      this.removeGroup(sound);
-    });
-
-    group.add(simpleText);
-  }
-
-  addGroup(layer, id, sound){
-    if (this.tracks.indexOf(sound) == -1){
-      let group = new Konva.Group({
-        id: sound,
-        sound: new Howl({
-            src: ['./dist/' + sampleRefs[sound].name ]
-          }),
-      });
-      this.tracks.push(sound);
-      let value = (this.stage.getHeight() / 16);
-      let posX = value;
-      let posY = value * (id + 1)* 2;
-
-      this.addLabel(posX, posY, sound, group);
-
-      for (let i = 0; i < 8; i++){
-        this.addNode(group, value / 2, posX, posY, false);
-        posX = posX + (value * 2);
-      }
-      layer.add(group);
-      this.layer.draw();
-    } else {
-      console.log('No duplicates');
-    }
-  }
-
   sequenceAnimation(sequence){
     let tick = 0;
     let beat = 0;
@@ -101,8 +105,8 @@ class SequencerCanvas {
         });
         let tracks = this.layer.children;
         tracks.forEach((track) => {
-          track.children[beat].scale({x: 2, y: 2});
-          if (track.children[beat].attrs.active){
+          track.children[beat + 1].scale({x: 2, y: 2});
+          if (track.children[beat + 1].attrs.active){
             track.attrs.sound.play();
           }
         });
